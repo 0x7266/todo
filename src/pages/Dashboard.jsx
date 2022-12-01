@@ -9,7 +9,7 @@ export default function Dashboard() {
   const { todos, dispatch } = useTodosContext();
 
   async function getTodos() {
-    const response = await fetch('/api/todo');
+    const response = await fetch('https://todo-backend.herokuapp.com/api/todo');
     const data = await response.json();
     dispatch({ type: 'SET_TODOS', payload: data });
   }

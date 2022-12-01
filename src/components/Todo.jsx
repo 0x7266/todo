@@ -8,20 +8,23 @@ export default function Todo({ todo }) {
   const { todos, dispatch } = useTodosContext();
 
   async function handleStatus(todo) {
-    const response = await fetch(`/api/todo/${todo._id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({ ...todo, isCompleted: !isCompleted }),
-    });
+    const response = await fetch(
+      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({ ...todo, isCompleted: !isCompleted }),
+      }
+    );
     const data = await response.json();
     if (response.ok) {
       dispatch({});
     }
   }
   function handleEditMode() {
-    if (editMode === true) {
+    if (isCompleted || editMode) {
       return;
     }
     setEditMode(true);
@@ -29,13 +32,16 @@ export default function Todo({ todo }) {
 
   async function handleEdit(e) {
     e.preventDefault();
-    const response = await fetch(`/api/todo/${todo._id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({ ...todo, text: newText }),
-    });
+    const response = await fetch(
+      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({ ...todo, text: newText }),
+      }
+    );
     const data = await response.json();
     if (response.ok) {
       dispatch({});
@@ -45,12 +51,15 @@ export default function Todo({ todo }) {
 
   async function handleDelete(e, todo) {
     e.preventDefault();
-    const response = await fetch(`/api/todo/${todo._id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'DELETE',
-    });
+    const response = await fetch(
+      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      }
+    );
     const data = await response.json();
     if (response.ok) {
       dispatch({ type: 'DELETE_TODO', payload: data });

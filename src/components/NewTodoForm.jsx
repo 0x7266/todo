@@ -8,13 +8,16 @@ export default function NewTodoForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const response = await fetch('/api/todo', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({ text: todo, isCompleted: false, edit: false }),
-    });
+    const response = await fetch(
+      'https://todo-backend.herokuapp.com/api/todo',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ text: todo, isCompleted: false, edit: false }),
+      }
+    );
     const data = await response.json();
 
     if (response.ok) {
