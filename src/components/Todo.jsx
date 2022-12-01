@@ -3,7 +3,7 @@ import { useTodosContext } from '../hooks/useTodosContext';
 
 export default function Todo({ todo }) {
   const [editMode, setEditMode] = useState(false);
-  const [newText, setNewText] = useState('');
+  const [newText, setNewText] = useState(todo.text);
   const { text, isCompleted } = todo;
   const { todos, dispatch } = useTodosContext();
 
@@ -32,6 +32,9 @@ export default function Todo({ todo }) {
 
   async function handleEdit(e) {
     e.preventDefault();
+    if (!newText) {
+      return;
+    }
     const response = await fetch(
       `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
       {
@@ -84,6 +87,7 @@ export default function Todo({ todo }) {
       </label>
       <div
         onClick={handleEditMode}
+        onBlur={handleEdit}
         className={'todo-text w-full px-5' + (isCompleted ? 'completed' : '')}
       >
         {!isCompleted && editMode ? (
@@ -96,6 +100,7 @@ export default function Todo({ todo }) {
               type="text"
               onChange={(e) => setNewText(e.target.value)}
               className="bg-transparent border-none outline-none text-center"
+              value={newText}
             />
           </form>
         ) : (
