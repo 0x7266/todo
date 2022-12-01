@@ -15,18 +15,18 @@ function todosReducer(state, action) {
         todos: state.todos.filter((todo) => todo._id !== action.payload._id),
       };
     }
-    case 'EDIT_STATUS': {
-      return {
-        todos: state.todos.map((todo) =>
-          todo._id === action.payload._id
-            ? [
-                ...state.todos,
-                { ...todo, isCompleted: action.payload.isCompleted },
-              ]
-            : null
-        ),
-      };
-    }
+    // case 'EDIT_STATUS': {
+    //   return {
+    //     todos: state.todos.map((todo) =>
+    //       todo._id === action.payload._id
+    //         ? [
+    //             ...state.todos,
+    //             { ...todo, isCompleted: action.payload.isCompleted },
+    //           ]
+    //         : [...state.todos]
+    //     ),
+    //   };
+    // }
     default:
       return state;
   }

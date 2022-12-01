@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useTodosContext } from '../hooks/useTodosContext';
 
 export default function Todo({ todo }) {
+  const [editMode, setEditMode] = useState(false);
+  const [newText, setNewText] = useState('');
   const { text, isCompleted } = todo;
   const { todos, dispatch } = useTodosContext();
 
@@ -16,6 +19,28 @@ export default function Todo({ todo }) {
     if (response.ok) {
       dispatch({});
     }
+  }
+  function handleEditMode() {
+    if (editMode === true) {
+      return;
+    }
+    setEditMode(true);
+  }
+
+  async function handleEdit(e) {
+    e.preventDefault();
+    const response = await fetch(`/api/todo/${todo._id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({ ...todo, text: newText }),
+    });
+    const data = await response.json();
+    if (response.ok) {
+      dispatch({});
+    }
+    setEditMode(false);
   }
 
   async function handleDelete(e, todo) {
@@ -48,23 +73,26 @@ export default function Todo({ todo }) {
         />
         <div className="checkmark"></div>
       </label>
-      {/* <div
-        onClick={(e) => enterEditMode(e, text)}
+      <div
+        onClick={handleEditMode}
         className={'todo-text w-full px-5' + (isCompleted ? 'completed' : '')}
-      > */}
-      {/* {editMode && isCompleted ? (
-        {isCompleted ? (
-          <input
-            autoFocus
-            //onChange={(e) => setNewText(e.target.value)}
-            // onBlur={() => handleEdit()}
-            type="text"
-            className="edit-input bg-transparent text-center w-full"
-          />
-        ) : ( */}
-      <div className="break-all w-full px-5">{text}</div>
-      {/* )} */}
-      {/* </div> */}
+      >
+        {!isCompleted && editMode ? (
+          <form
+            onSubmit={(e) => handleEdit(e)}
+            onBlur={() => setEditMode(false)}
+          >
+            <input
+              autoFocus
+              type="text"
+              onChange={(e) => setNewText(e.target.value)}
+              className="bg-transparent border-none outline-none text-center"
+            />
+          </form>
+        ) : (
+          <div className="break-all w-full px-5">{text}</div>
+        )}
+      </div>
       <button
         type="button"
         value="X"

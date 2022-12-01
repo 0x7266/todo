@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import NewTodoForm from '../components/NewTodoForm';
+import OpenModalButton from '../components/OpenModalButton';
 import Todo from '../components/Todo';
 import { useTodosContext } from '../hooks/useTodosContext';
 
@@ -17,7 +18,7 @@ export default function Dashboard() {
     getTodos();
   }, [todos]);
   return (
-    <div className="w-full sm:w-3/5 flex flex-col items-center gap-10 px-2 sm:px-0">
+    <div className="w-full sm:w-[600px] flex flex-col items-center gap-10 px-2 sm:px-0">
       <Navbar />
       <NewTodoForm />
       <div className="flex flex-col gap-2 w-full">

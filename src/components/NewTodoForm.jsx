@@ -1,5 +1,4 @@
 import { useState } from 'react';
-//import useFetch from '../hooks/useFetch';
 import { useTodosContext } from '../hooks/useTodosContext';
 import OpenModalButton from './OpenModalButton';
 
@@ -14,20 +13,20 @@ export default function NewTodoForm() {
         'Content-Type': 'application/json',
       },
       method: 'POST',
-      body: JSON.stringify({ text: todo, isCompleted: false }),
+      body: JSON.stringify({ text: todo, isCompleted: false, edit: false }),
     });
     const data = await response.json();
 
     if (response.ok) {
       dispatch({ type: 'CREATE_TODO', payload: data });
-      setTodo('')
+      setTodo('');
     }
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex items-start justify-center">
       <form
-        className="flex gap-5"
+        className="flex gap-5 w-full sm:w-[600px]"
         onSubmit={(e) => handleSubmit(e)}
       >
         <input

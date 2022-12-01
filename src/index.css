@@ -6,8 +6,8 @@
   display: none;
 }
 
-.modal {
-  backdrop-filter: blur(3px);
+.modal-opened {
+  backdrop-filter: grayscale(90%) blur(1.5px);
 }
 
 .modal-content {
