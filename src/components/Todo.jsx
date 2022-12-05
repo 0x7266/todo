@@ -1,25 +1,35 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { useTodosContext } from '../hooks/useTodosContext';
 
-export default function Todo({ todo }) {
-  const [editMode, setEditMode] = useState(false);
-  const [newText, setNewText] = useState(todo.text);
+export default function Todo({ todo, setChange }) {
   const { text, isCompleted } = todo;
+  const [editMode, setEditMode] = useState(false);
+  const [newText, setNewText] = useState(text);
   const { todos, dispatch } = useTodosContext();
+  const { user } = useAuthContext();
 
-  async function handleStatus(todo) {
-    const response = await fetch(
-      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify({ ...todo, isCompleted: !isCompleted }),
-      }
-    );
+  function throwError() {
+    if (!user) {
+      throw Error('You must be logged in');
+      return;
+    }
+  }
+
+  async function handleStatus() {
+    throwError();
+    const response = await fetch(`/api/todo/${todo._id}`, {
+      headers: {
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({ ...todo, isCompleted: !isCompleted }),
+    });
     const data = await response.json();
     if (response.ok) {
+      setChange((cur) => cur + 1);
       dispatch({});
     }
   }
@@ -32,40 +42,41 @@ export default function Todo({ todo }) {
 
   async function handleEdit(e) {
     e.preventDefault();
+    throwError();
     if (!newText) {
       return;
     }
-    const response = await fetch(
-      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'PATCH',
-        body: JSON.stringify({ ...todo, text: newText }),
-      }
-    );
+    const response = await fetch(`/api/todo/${todo._id}`, {
+      headers: {
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({ ...todo, text: newText }),
+    });
     const data = await response.json();
     if (response.ok) {
       dispatch({});
+      setChange((cur) => cur + 1);
     }
     setEditMode(false);
   }
 
   async function handleDelete(e, todo) {
     e.preventDefault();
-    const response = await fetch(
-      `https://todo-backend.herokuapp.com/api/todo/${todo._id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-      }
-    );
+    throwError();
+
+    const response = await fetch(`/api/todo/${todo._id}`, {
+      headers: {
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+    });
     const data = await response.json();
     if (response.ok) {
       dispatch({ type: 'DELETE_TODO', payload: data });
+      setChange((cur) => cur + 1);
     }
   }
 
@@ -79,7 +90,7 @@ export default function Todo({ todo }) {
       <label className="checkbox-container">
         <input
           type="checkbox"
-          onChange={() => handleStatus(todo)}
+          onChange={handleStatus}
           checked={isCompleted}
           className="checkbox"
         />

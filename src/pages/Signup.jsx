@@ -1,25 +1,34 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../hooks/useAuthContext';
-import { useLogin } from '../hooks/useLogin';
+import { useSignup } from '../hooks/useSignup';
 
-export default function Login() {
+export default function Signup() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, isLoading, error } = useLogin();
-  const { user } = useAuthContext();
+  const { signup, isLoading, error } = useSignup();
+
   async function handleSubmit(e) {
     e.preventDefault();
-    await login(email, password);
-    console.log(user);
+    await signup(name, email, password);
   }
 
   return (
     <form
-      className="flex flex-col justify-center self-center items-center gap-5 p-10 bg-blue rounded-xl text-xl text-neutral-400"
+      className="flex flex-col h-fit self-center justify-center items-center gap-5 p-10 bg-blue rounded-xl text-xl text-neutral-400"
       onSubmit={handleSubmit}
     >
-      <h1 className="text-2xl font-semibold">LOGIN</h1>
+      <h1 className="text-2xl font-semibold">SIGNUP</h1>
+      <div className="flex flex-col items-start">
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          className="py-1 px-2 rounded"
+          onChange={(e) => setName(e.target.value)}
+          value={name}
+        />
+      </div>
       <div className="flex flex-col items-start">
         <label htmlFor="email">Email</label>
         <input
@@ -44,7 +53,7 @@ export default function Login() {
         disabled={isLoading}
         className="btn w-full bg-cyan-800 py-1 rounded mt-2"
       >
-        Login
+        Signup
       </button>
       {error ? (
         <div className="w-full self-start bg-red-200 bg-opacity-80 text-rose-600 text-opacity-70 font-semibold border-4 border-rose-600 border-opacity-40 rounded p-2">
@@ -52,12 +61,13 @@ export default function Login() {
         </div>
       ) : null}
       <div className="flex items-center gap-1">
-        <span className="text-sm">Not registered?</span>
+        <span className="text-sm">Already registered?</span>
+
         <Link
-          to="/signup"
+          to="/login"
           className="text-sm text-cyan-800 font-semibold underline"
         >
-          Sign up
+          Login
         </Link>
       </div>
     </form>

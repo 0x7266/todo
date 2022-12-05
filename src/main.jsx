@@ -1,19 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+
 import App from './App';
-import { HiddenContextProvider } from './context/HiddenContext';
+import { AuthContextProvider } from './context/AuthContext';
 import { TodosContextProvider } from './context/TodosContext';
+
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <TodosContextProvider>
-      <HiddenContextProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </HiddenContextProvider>
-    </TodosContextProvider>
+    <AuthContextProvider>
+      <TodosContextProvider>
+        <App />
+      </TodosContextProvider>
+    </AuthContextProvider>
   </React.StrictMode>
 );

@@ -1,23 +1,27 @@
 import { useState } from 'react';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { useTodosContext } from '../hooks/useTodosContext';
-import OpenModalButton from './OpenModalButton';
 
 export default function NewTodoForm() {
   const [todo, setTodo] = useState('');
   const { todos, dispatch } = useTodosContext();
+  const { user } = useAuthContext();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const response = await fetch(
-      'https://todo-backend.herokuapp.com/api/todo',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({ text: todo, isCompleted: false, edit: false }),
-      }
-    );
+
+    if (!user) {
+      throw Error('You must be logged in');
+      return;
+    }
+    const response = await fetch('/api/todo', {
+      headers: {
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({ text: todo, isCompleted: false, edit: false }),
+    });
     const data = await response.json();
 
     if (response.ok) {
@@ -27,7 +31,7 @@ export default function NewTodoForm() {
   }
 
   return (
-    <div className="w-full h-full flex items-start justify-center">
+    <div className="w-full flex items-start justify-center">
       <form
         className="flex gap-5 w-full sm:w-[600px]"
         onSubmit={(e) => handleSubmit(e)}
