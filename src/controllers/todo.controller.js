@@ -3,7 +3,8 @@ const Todo = require('../models/todo.model.js');
 module.exports = {
   getTodos: async (req, res) => {
     try {
-      const response = await Todo.find();
+      const user_id = req.user._id;
+      const response = await Todo.find({ user_id });
       res.json(response);
     } catch (error) {
       console.error(error.message);
@@ -19,7 +20,8 @@ module.exports = {
   },
   createTodo: async (req, res) => {
     try {
-      const response = await Todo.create(req.body);
+      const user_id = req.user._id;
+      const response = await Todo.create({ ...req.body, user_id });
       res.json(response);
     } catch (error) {
       console.error(error.message);
