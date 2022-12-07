@@ -14,6 +14,9 @@ app.use(helmet());
 app.use(cors());
 app.use('/api/user', userRoute);
 app.use('/api/todo', todoRoute);
+app.get('*', (req, res) => {
+  res.json({ message: 'Nothing to see here' });
+});
 
 connect(() => {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
